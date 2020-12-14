@@ -1,1 +1,1 @@
-# nodelol-discord-bot
+# discord-bot
