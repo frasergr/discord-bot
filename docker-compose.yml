@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    container_name: discord-bot
+    build: .
+    image: discord-bot
+    restart: always
+    volumes:
+      - .:/home/node/app
+      - ./frontend:/home/node/app/frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${NETWORK_NAME}"
+      - "traefik.http.routers.discord-redirect.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.discord-redirect.middlewares=redirect@file"
+      - "traefik.http.routers.discord.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.discord.tls=true"
+      - "traefik.http.services.discord.loadbalancer.server.port=${PORT}"
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}
