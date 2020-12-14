@@ -13,9 +13,9 @@ COPY --chown=node ./package*.json ./
 RUN npm install concurrently nodemon
 RUN npm install
 
-# WORKDIR /home/node/cache/frontend
-# COPY --chown=node ./frontend/package*.json ./
-# RUN npm install
+WORKDIR /home/node/cache/frontend
+COPY --chown=node ./frontend/package*.json ./
+RUN npm install
 
 WORKDIR /home/node/app
 

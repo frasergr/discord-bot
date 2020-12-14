@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
-    "client": "cd frontend && node start",
-    "dev": "concurrently \"node server\" \"node client\"",
+    "client": "cd frontend && npm run start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d"
   },
