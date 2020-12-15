@@ -6,14 +6,15 @@
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
-    "client": "cd frontend && node start",
-    "dev": "concurrently \"node server\" \"node client\"",
+    "client": "cd frontend && npm run start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d"
   },
   "author": "frasergr <frasergr@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/storage": "^5.7.0",
     "ascii-table": "^0.0.9",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",

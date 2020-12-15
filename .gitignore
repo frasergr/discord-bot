@@ -1,3 +1,5 @@
 .env
+.env.development
 node_modules/
 .idea/
+/*.json
