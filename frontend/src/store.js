@@ -2,15 +2,15 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import {
-  productDetailsReducer,
-  productListReducer,
-  productDeleteReducer,
-  productUpdateReducer,
-  productCreateReducer,
-  productUploadImageReducer,
-  productReviewCreateReducer,
-  productTopRatedReducer
-} from './reducers/productReducers.js'
+  emoteDetailsReducer,
+  emoteListReducer,
+  emoteDeleteReducer,
+  emoteUpdateReducer,
+  emoteCreateReducer,
+  emoteUploadImageReducer,
+  emoteReviewCreateReducer,
+  emoteTopRatedReducer
+} from './reducers/emoteReducers.js'
 import {
   userLoginReducer,
   userRegisterReducer,
@@ -22,14 +22,14 @@ import {
 } from './reducers/userReducers.js'
 
 const reducer = combineReducers({
-  productList: productListReducer,
-  productDetails: productDetailsReducer,
-  productDelete: productDeleteReducer,
-  productUpdate: productUpdateReducer,
-  productCreate: productCreateReducer,
-  productReviewCreate: productReviewCreateReducer,
-  productUploadImage: productUploadImageReducer,
-  productTopRated: productTopRatedReducer,
+  emoteList: emoteListReducer,
+  emoteDetails: emoteDetailsReducer,
+  emoteDelete: emoteDeleteReducer,
+  emoteUpdate: emoteUpdateReducer,
+  emoteCreate: emoteCreateReducer,
+  emoteReviewCreate: emoteReviewCreateReducer,
+  emoteUploadImage: emoteUploadImageReducer,
+  emoteTopRated: emoteTopRatedReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,

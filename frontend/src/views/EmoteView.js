@@ -5,39 +5,39 @@ import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Meta from '../components/Meta'
-import { listProductDetails, createProductReview } from '../actions/productActions'
-import { PRODUCT_REVIEW_CREATE_RESET } from '../constants/productConstants'
+import { listEmoteDetails, createEmoteReview } from '../actions/emoteActions'
+import { EMOTE_REVIEW_CREATE_RESET } from '../constants/emoteConstants'
 
-const ProductView = ({ history, match }) => {
+const EmoteView = ({ history, match }) => {
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   
   const dispatch = useDispatch()
 
-  const productDetails = useSelector(state => state.productDetails)
-  const { loading, error, product } = productDetails
+  const emoteDetails = useSelector(state => state.emoteDetails)
+  const { loading, error, emote } = emoteDetails
 
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
-  const productReviewCreate = useSelector(state => state.productReviewCreate)
-  const { loading:loadingProductReview, success:successProductReview, error:errorProductReview } = productReviewCreate
+  const emoteReviewCreate = useSelector(state => state.emoteReviewCreate)
+  const { loading:loadingEmoteReview, success:successEmoteReview, error:errorEmoteReview } = emoteReviewCreate
 
   useEffect(() => {
-    if (successProductReview) {
+    if (successEmoteReview) {
       setRating(0)
       setComment('')
     }
-    if (!product._id || product._id !== match.params.id) {
-      dispatch(listProductDetails(match.params.id))
-      dispatch({ type: PRODUCT_REVIEW_CREATE_RESET })
+    if (!emote._id || emote._id !== match.params.id) {
+      dispatch(listEmoteDetails(match.params.id))
+      dispatch({ type: EMOTE_REVIEW_CREATE_RESET })
     }
-  }, [dispatch, match, successProductReview, product])
+  }, [dispatch, match, successEmoteReview, emote])
 
   const submitHandler = (e) => {
     e.preventDefault()
-    dispatch(createProductReview(match.params.id, {
+    dispatch(createEmoteReview(match.params.id, {
       rating: rating,
       comment: comment
     }))
@@ -50,23 +50,23 @@ const ProductView = ({ history, match }) => {
       </Link>
       {loading ? <Loader/> : error ? <Message>{error}</Message> :
         <>
-          <Meta title={product.name} />
+          <Meta title={emote.name} />
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid/>
+              <Image src={emote.image} alt={emote.name} fluid/>
             </Col>
             <Col md={3}>
               <ListGroup variant={'flush'}>
                 <ListGroup.Item>
-                  <h3>{product.name}</h3>
+                  <h3>{emote.name}</h3>
                 </ListGroup.Item>
                 <ListGroup.Item>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  Price: ${product.price}
+                  Price: ${emote.price}
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  Description: ${product.description}
+                  Description: ${emote.description}
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -79,7 +79,7 @@ const ProductView = ({ history, match }) => {
                         Price:
                       </Col>
                       <Col>
-                        <strong>${product.price}</strong>
+                        <strong>${emote.price}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -88,12 +88,12 @@ const ProductView = ({ history, match }) => {
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                        {emote.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
                       </Col>
                     </Row>
                   </ListGroup.Item>
 
-                  {product.countInStock > 0 && (
+                  {emote.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
                         <Col>Qty</Col>
@@ -103,7 +103,7 @@ const ProductView = ({ history, match }) => {
                             value={qty} 
                             onChange={(e) => setQty(e.target.value)}
                           >
-                            {[...Array(product.countInStock).keys()].map(x => (
+                            {[...Array(emote.countInStock).keys()].map(x => (
                               <option key={x + 1} value={x + 1}>{x + 1}</option>
                             ))}
                           </Form.Control>
@@ -116,7 +116,7 @@ const ProductView = ({ history, match }) => {
                     <Button 
                       className={'btn-block'} 
                       type={'button'} 
-                      disabled={product.countInStock === 0}
+                      disabled={emote.countInStock === 0}
                       onClick={null}
                     >
                       Add to Cart
@@ -129,9 +129,9 @@ const ProductView = ({ history, match }) => {
           <Row>
             <Col md={6}>
               <h2>Reviews</h2>
-              {product.reviews.length === 0 && <Message dismissible={false} variant={'secondary'}>No Reviews</Message>}
+              {emote.reviews.length === 0 && <Message dismissible={false} variant={'secondary'}>No Reviews</Message>}
               <ListGroup variant={'flush'}>
-                {product.reviews.map((review) => (
+                {emote.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <p>{review.createdAt.substring(0, 10)}</p>
@@ -141,13 +141,13 @@ const ProductView = ({ history, match }) => {
                 {userInfo && (
                   <ListGroup.Item>
                     <h2>Write a Review</h2>
-                    {successProductReview && (
+                    {successEmoteReview && (
                       <Message variant='success'>
                         Review submitted successfully
                       </Message>
                     )}
-                    {loadingProductReview && <Loader/>}
-                    {errorProductReview && <Message>{errorProductReview}</Message>}
+                    {loadingEmoteReview && <Loader/>}
+                    {errorEmoteReview && <Message>{errorEmoteReview}</Message>}
                     <Form onSubmit={submitHandler}>
                       <Form.Group controlId={'rating'}>
                         <Form.Label>Rating</Form.Label>
@@ -173,7 +173,7 @@ const ProductView = ({ history, match }) => {
                           onChange={(e) => setComment(e.target.value)}
                         />
                       </Form.Group>
-                      <Button disabled={loadingProductReview} type={'submit'} variant={'primary'}>Submit</Button>
+                      <Button disabled={loadingEmoteReview} type={'submit'} variant={'primary'}>Submit</Button>
                     </Form>
                   </ListGroup.Item>
                 )}
@@ -186,4 +186,4 @@ const ProductView = ({ history, match }) => {
   )
 }
         
-export default ProductView
+export default EmoteView

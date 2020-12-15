@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
   const pathSelect = (x) => {
     return !isAdmin ? keyword ? `/search/${keyword}/page/${x + 1}` : `/page/${x + 1}` : (
-      `/admin/productlist/${x + 1}`
+      `/admin/emotelist/${x + 1}`
     )
   }
   return pages > 1 && (

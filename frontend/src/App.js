@@ -3,14 +3,15 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import ProductView from './views/ProductView'
+import EmoteView from './views/EmoteView'
 import LoginView from './views/LoginView'
 import RegisterView from './views/RegisterView'
 import ProfileView from './views/ProfileView'
 import UserListView from './views/UserListView'
 import UserEditView from './views/UserEditView'
-import ProductEditView from './views/ProductEditView'
-import ProductListView from './views/ProductListView'
+import EmoteEditView from './views/EmoteEditView'
+import EmoteCreateView from './views/EmoteCreateView'
+import EmoteListView from './views/EmoteListView'
 
 const App = () => {
   return (
@@ -21,12 +22,13 @@ const App = () => {
           <Route path={'/login'} component={LoginView} />
           <Route path={'/register'} component={RegisterView} />
           <Route path={'/profile'} component={ProfileView} />
-          <Route path={'/product/:id'} component={ProductView} />
+          <Route path={'/emote/:id'} component={EmoteView} />
           <Route path={'/admin/userlist'} component={UserListView} />
           <Route path={'/admin/user/:id/edit'} component={UserEditView} />
-          <Route path={'/admin/product/:id/edit'} component={ProductEditView} />
-          <Route path={'/admin/productlist'} component={ProductListView} exact />
-          <Route path={'/admin/productlist/:pageNumber'} component={ProductListView} exact />
+          <Route path={'/admin/emote/:id/edit'} component={EmoteEditView} />
+          <Route path={'/admin/emote/create'} component={EmoteCreateView} />
+          <Route path={'/admin/emotelist'} component={EmoteListView} exact />
+          <Route path={'/admin/emotelist/:pageNumber'} component={EmoteListView} exact />
         </Container>
       </main>
       <Footer/>

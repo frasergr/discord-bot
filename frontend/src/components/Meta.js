@@ -12,7 +12,7 @@ const Meta = ({ title, description, keywords }) => {
 }
 
 Meta.defaultProps = {
-  title: 'Origins',
+  title: 'Discord Bot',
   description: 'Description',
   keywords: 'key, words'
 }

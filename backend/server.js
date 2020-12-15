@@ -16,7 +16,7 @@ dotenv.config()
 
 connectDB()
 
-// discordBot()
+discordBot()
 
 const app = express()
 

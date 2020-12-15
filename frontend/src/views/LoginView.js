@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
@@ -59,10 +58,6 @@ const LoginView = ({ location, history }) => {
 
         <Button type={'submit'} variant={'primary'}>Sign In</Button>
       </Form>
-      
-      <Row className={'py-3'}>
-        <Col>New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register</Link></Col>
-      </Row>
     </FormContainer>
   )
 }
