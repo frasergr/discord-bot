@@ -9,6 +9,7 @@ import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 import emoteRoutes from './routes/emoteRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import oauthRoutes from './routes/oauthRoutes.js'
 
 import discordBot from './discord/bot.js'
 
@@ -33,6 +34,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/emotes', emoteRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/upload', uploadRoutes)
+app.use('/api/oauth', oauthRoutes)
 
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
