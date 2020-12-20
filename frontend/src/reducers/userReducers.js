@@ -24,7 +24,13 @@ import {
   USER_UPDATE_RESET,
   USER_UPDATE_FAIL,
   USER_UPDATE_SUCCESS,
-  USER_UPDATE_REQUEST
+  USER_UPDATE_REQUEST,
+  USER_OAUTH_REGISTER_FAIL,
+  USER_OAUTH_REGISTER_REQUEST,
+  USER_OAUTH_REGISTER_SUCCESS,
+  USER_OAUTH_LIST_FAIL,
+  USER_OAUTH_LIST_REQUEST,
+  USER_OAUTH_LIST_SUCCESS
 } from '../constants/userConstants.js'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -123,6 +129,32 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
       return { loading: false, error: action.payload }
     case USER_UPDATE_RESET:
       return { user: {} }
+    default:
+      return state
+  }
+}
+
+export const userOauthRegisterReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_OAUTH_REGISTER_REQUEST:
+      return { loading: true }
+    case USER_OAUTH_REGISTER_SUCCESS:
+      return { loading: false, oauth: action.payload, success: true }
+    case USER_OAUTH_REGISTER_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const userOauthListReducer = (state = { oauth: [] }, action) => {
+  switch (action.type) {
+    case USER_OAUTH_LIST_REQUEST:
+      return { loading: true }
+    case USER_OAUTH_LIST_SUCCESS:
+      return { loading: false, oauth: action.payload, success: true }
+    case USER_OAUTH_LIST_FAIL:
+      return { loading: false, error: action.payload }
     default:
       return state
   }

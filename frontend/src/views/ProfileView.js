@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import DiscordButton from '../components/DiscordButton'
+import { getUserDetails, updateUserProfile, getUserOauth } from '../actions/userActions'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
 const ProfileView = ({ history }) => {
@@ -24,6 +25,9 @@ const ProfileView = ({ history }) => {
   const userUpdateProfile = useSelector(state => state.userUpdateProfile)
   const { success, error } = userUpdateProfile
 
+  const userOauthList = useSelector(state => state.userOauthList)
+  const { loading:loadingOauthList, error:errorOauthList, oauth } = userOauthList
+
   useEffect(() => {
     if (!userInfo) {
       history.push('/login')
@@ -31,6 +35,7 @@ const ProfileView = ({ history }) => {
       if (!user || !user.name) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET })
         dispatch(getUserDetails('profile'))
+        dispatch(getUserOauth())
       } else {
         setName(user.name || user.name)
         setEmail(user.email || user.email)
@@ -53,9 +58,9 @@ const ProfileView = ({ history }) => {
         <h2>User Profile</h2>
 
         {message && <Message>{message}</Message>}
-        {error && <Message>{error}</Message>}
+        {(error || errorOauthList) && <Message>{error}</Message>}
         {success && <Message variant={'success'} hideAfter={5}>Profile Updated</Message>}
-        {loading && <Loader/>}
+        {(loading || loadingOauthList) && <Loader/>}
 
         <Form onSubmit={submitHandler}>
           <Form.Group controlId={'name'}>
@@ -104,8 +109,13 @@ const ProfileView = ({ history }) => {
         </Form>
       </Col>
       <Col md={6}>
-        <h2>Link Accounts</h2>
-        <Button>Discord</Button>
+        <h2>Linked Accounts</h2>
+        {/* {loadingOauthList ? <Loader/> : (<>
+          {oauth.map(o => (
+            <h4>{o.name}</h4>
+          ))}
+        </>)} */}
+        <DiscordButton/>
       </Col>
     </Row>
   )
