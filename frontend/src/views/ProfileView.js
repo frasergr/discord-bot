@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -7,14 +8,16 @@ import DiscordButton from '../components/DiscordButton'
 import { getUserDetails, updateUserProfile, getUserOauth } from '../actions/userActions'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
-const ProfileView = ({ history }) => {
+const ProfileView = () => {
+  const history = useHistory()
+
+  const dispatch = useDispatch()
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [message, setMessage] = useState(null)
-
-  const dispatch = useDispatch()
+  const [message, setMessage] = useState(null) 
 
   const userDetails = useSelector(state => state.userDetails)
   const { loading, user } = userDetails
@@ -26,7 +29,7 @@ const ProfileView = ({ history }) => {
   const { success, error } = userUpdateProfile
 
   const userOauthList = useSelector(state => state.userOauthList)
-  const { loading:loadingOauthList, error:errorOauthList, oauth } = userOauthList
+  const { oauth } = userOauthList
 
   useEffect(() => {
     if (!userInfo) {
@@ -35,13 +38,15 @@ const ProfileView = ({ history }) => {
       if (!user || !user.name) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET })
         dispatch(getUserDetails('profile'))
-        dispatch(getUserOauth())
       } else {
         setName(user.name || user.name)
         setEmail(user.email || user.email)
+        if (!oauth) {
+          dispatch(getUserOauth())
+        }
       }
     }
-  }, [dispatch, history, userInfo, user, userLogin])
+  }, [dispatch, history, userInfo, user, userLogin, oauth])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -58,9 +63,9 @@ const ProfileView = ({ history }) => {
         <h2>User Profile</h2>
 
         {message && <Message>{message}</Message>}
-        {(error || errorOauthList) && <Message>{error}</Message>}
+        {error && <Message>{error}</Message>}
         {success && <Message variant={'success'} hideAfter={5}>Profile Updated</Message>}
-        {(loading || loadingOauthList) && <Loader/>}
+        {loading && <Loader/>}
 
         <Form onSubmit={submitHandler}>
           <Form.Group controlId={'name'}>
@@ -110,11 +115,6 @@ const ProfileView = ({ history }) => {
       </Col>
       <Col md={6}>
         <h2>Linked Accounts</h2>
-        {/* {loadingOauthList ? <Loader/> : (<>
-          {oauth.map(o => (
-            <h4>{o.name}</h4>
-          ))}
-        </>)} */}
         <DiscordButton/>
       </Col>
     </Row>
