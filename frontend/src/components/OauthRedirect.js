@@ -12,11 +12,11 @@ const OauthRedirect = ({ location, match }) => {
   
   useEffect(() => {
     if (searchParams.has('code')) {
-      dispatch(registerOauth(searchParams.get('code'), name)) 
+      dispatch(registerOauth(searchParams.get('code'), name))
     }
   }, [dispatch, searchParams, name])
 
-  return <Redirect to="/profile" />
+  return <Redirect to={{pathname: "/profile", state: {refreshOauth: true}}} />
 }
   
 export default OauthRedirect

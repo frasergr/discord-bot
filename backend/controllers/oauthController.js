@@ -134,7 +134,8 @@ const revokeOauth = asyncHandler(async (req, res) => {
           res.json({
             _id: data._id,
             name: data.name,
-            revoked: data.revoked
+            revoked: data.revoked,
+            expires: data.expires
           })
         }
       })

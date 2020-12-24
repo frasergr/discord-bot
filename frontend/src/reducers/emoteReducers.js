@@ -47,7 +47,7 @@ export const emoteListReducer = (state = { emotes: [] }, action) => {
   }
 }
 
-export const emoteDetailsReducer = (state = { emote: { reviews: [] } }, action) => {
+export const emoteDetailsReducer = (state = { emote: {} }, action) => {
   switch (action.type) {
     case EMOTE_DETAILS_REQUEST:
       return { loading: true, ...state }
