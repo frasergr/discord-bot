@@ -25,6 +25,23 @@ const userSchema = mongoose.Schema({
   timestamps: true
 })
 
+const userRegisterTokenSchema = mongoose.Schema({
+  token: {
+    type: String,
+    required: true
+  },
+  oauthId: {
+    type: String,
+    required: true
+  },
+  expires: {
+    type: Date,
+    required: true
+  }
+}, {
+  timestamps: true
+})
+
 userSchema.plugin(uniqueValidator)
 
 userSchema.methods.matchPassword = async function(enteredPassword) {
@@ -41,5 +58,6 @@ userSchema.pre('save', async function (next) {
 })
 
 const User = mongoose.model('User', userSchema)
+const UserRegisterToken = mongoose.model('UserRegisterToken', userRegisterTokenSchema)
 
-export default User
+export { User, UserRegisterToken }
