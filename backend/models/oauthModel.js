@@ -35,6 +35,28 @@ const oauthSchema = mongoose.Schema({
     type: Boolean,
     required: false,
     default: false
+  },
+  profile: {
+    id: { 
+      type: String,
+      required: false
+    },
+    userName: {
+      type: String,
+      required: false
+    },
+    discriminator: {
+      type: String,
+      required: false
+    },
+    email: {
+      type: String,
+      required: false
+    },
+    avatar: {
+      type: String,
+      required: false
+    }
   }
 }, {
   timestamps: true
