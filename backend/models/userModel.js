@@ -30,13 +30,18 @@ const userRegisterTokenSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  oauthId: {
+  profileId: {
     type: String,
     required: true
   },
   expires: {
     type: Date,
     required: true
+  },
+  registered: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 }, {
   timestamps: true

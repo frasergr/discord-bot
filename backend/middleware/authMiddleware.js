@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
-import { User } from '../models/userModel.js'
+import { User, UserRegisterToken } from '../models/userModel.js'
 
 const protect = asyncHandler(async (req, res, next) => {
   let token
@@ -32,4 +32,29 @@ const admin = (req, res, next) => {
   }
 }
 
-export { protect, admin }
+const registerToken = asyncHandler(async (req, res, next) => {
+  const token = await UserRegisterToken.findOne({ token: req.body.registerToken, profileId: req.body.registerProfileId })
+
+  if (!token) {
+    res.status(401)
+    throw new Error('Invalid registration token')
+  }
+
+  if (token) {
+    const expires = new Date(token.expires)
+    if (expires < new Date()) {
+      res.status(401)
+      throw new Error('Registration token expired')
+    }
+    if (token.registered) {
+      res.status(401)
+      throw new Error('User already registered')
+    }
+  }
+
+  req.registerTokenId = token._id
+
+  next()
+})
+
+export { protect, admin, registerToken }

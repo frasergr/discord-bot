@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler'
-import { User } from '../models/userModel.js'
+import { User, UserRegisterToken } from '../models/userModel.js'
 import generateToken from '../utils/generateToken.js'
 
 // @desc    Auth user & get token
@@ -42,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   if (user) {
+    await UserRegisterToken.findByIdAndUpdate(req.registerTokenId, { registered: true })
     res.status(201).json({
       _id: user._id,
       name: user.name,

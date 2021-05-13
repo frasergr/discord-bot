@@ -25,7 +25,7 @@ const register = {
         data: {
           type: 4,
           data: {
-            content: `Click here to register: [Register](${process.env.HOST_URL}/register?registerToken=${userRegisterToken.token})`,
+            content: `Click here to register: [Register](${process.env.HOST_URL}/register?profileId=${discordId}&token=${userRegisterToken.token})`,
             flags: 64
           }
         }

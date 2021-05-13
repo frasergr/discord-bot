@@ -33,7 +33,10 @@ import {
   USER_OAUTH_LIST_RESET,
   USER_OAUTH_REVOKE_FAIL,
   USER_OAUTH_REVOKE_REQUEST,
-  USER_OAUTH_REVOKE_SUCCESS
+  USER_OAUTH_REVOKE_SUCCESS,
+  USER_CHECK_REGISTER_TOKEN_FAIL,
+  USER_CHECK_REGISTER_TOKEN_SUCCESS,
+  USER_CHECK_REGISTER_TOKEN_REQUEST
 } from "../constants/userConstants"
 
 export const login = (email, password) => async (dispatch) => {
@@ -66,12 +69,12 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
+  dispatch({ type: USER_LOGOUT })
   dispatch({ type: USER_DETAILS_RESET })
   dispatch({ type: USER_UPDATE_PROFILE_RESET })
-  dispatch({ type: USER_LOGOUT })
 }
 
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (name, email, password, registerToken, registerProfileId) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST
@@ -83,7 +86,7 @@ export const register = (name, email, password) => async (dispatch) => {
       }
     }
 
-    const { data } = await axios.post('/api/users', { name, email, password }, config)
+    const { data } = await axios.post('/api/users', { name, email, password, registerToken, registerProfileId }, config)
 
     dispatch({
       type: USER_REGISTER_SUCCESS,
@@ -345,6 +348,31 @@ export const revokeOauth = (name) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_OAUTH_REVOKE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message
+    })
+  }
+}
+
+export const checkRegisterToken = (registerToken, registerProfileId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_CHECK_REGISTER_TOKEN_REQUEST
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    await axios.post(`/api/users/register-token`, { registerToken, registerProfileId }, config)
+
+    dispatch({
+      type: USER_CHECK_REGISTER_TOKEN_SUCCESS
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_CHECK_REGISTER_TOKEN_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message
     })
   }

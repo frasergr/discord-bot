@@ -21,7 +21,8 @@ import {
   userUpdateReducer,
   userOauthRegisterReducer,
   userOauthListReducer,
-  userOauthRevokeReducer
+  userOauthRevokeReducer,
+  userCheckRegisterTokenReducer
 } from './reducers/userReducers.js'
 
 const reducer = combineReducers({
@@ -42,7 +43,8 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userOauthRegister: userOauthRegisterReducer,
   userOauthList: userOauthListReducer,
-  userOauthRevoke: userOauthRevokeReducer
+  userOauthRevoke: userOauthRevokeReducer,
+  userCheckRegisterToken: userCheckRegisterTokenReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
