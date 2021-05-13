@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import DiscordButton from '../components/DiscordButton'
+import Discord from '../components/Discord'
 import { getUserDetails, updateUserProfile, getUserOauth } from '../actions/userActions'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
@@ -115,7 +115,7 @@ const ProfileView = () => {
       </Col>
       <Col md={6}>
         <h2>Linked Accounts</h2>
-        <DiscordButton/>
+        <Discord/>
       </Col>
     </Row>
   )

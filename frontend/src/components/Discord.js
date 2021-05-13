@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { Button } from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import Loader from './Loader'
 import axios from 'axios'
 import { revokeOauth } from '../actions/userActions'
@@ -42,7 +42,7 @@ const styledButton = styled.button`
 }
 `
 
-const DiscordButton = () => {
+const Discord = () => {
   const dispatch = useDispatch()
   const [redirect, setRedirect] = useState(false)
   const [discordOauthUrl, setDiscordOauthUrl] = useState('')
@@ -66,7 +66,7 @@ const DiscordButton = () => {
   }
 
   const getDiscordOauthUrl = async () => {
-    const { data } = await axios.get(`/api/oauth/discord`, config)
+    const { data } = await axios.get(`/api/oauth/url/discord`, config)
     return data
   }
 
@@ -78,7 +78,6 @@ const DiscordButton = () => {
       setDiscordOauthUrl(url)
       setRedirect(true)
     }
-
   }
 
   useEffect(() => {
@@ -87,12 +86,26 @@ const DiscordButton = () => {
     }
   }, [redirect, discordOauthUrl])
 
-  return (
+  return (<>
     <Button outline={discordOauth ? true : false} variant={discordOauth ? 'outline-primary' : 'primary'} disabled={loading} onClick={onClickHandler} type={'button'} as={styledButton}>
       {loading || oauthRevokeLoading ? <><Loader size={'sm'} button/> Loading...</> : 
       <><i className={'fab fa-discord'}></i> {discordOauth ? 'Unlink' : 'Link'} Discord account</>}
     </Button>
-  )
+    {discordOauth && 
+      <OverlayTrigger
+        placement={'right'}
+        delay={{ show: 250, hide: 400 }}
+        overlay={
+          <Tooltip id={'discord-info-tooltip'}><>
+            <img className={'w-75'} src={`https://cdn.discordapp.com/avatars/${discordOauth?.profile?.id}/${discordOauth?.profile?.avatar}.png`}/>
+            <div>{`${discordOauth?.profile?.userName}#${discordOauth?.profile?.discriminator}`}</div>
+          </></Tooltip>
+        }
+      >
+        <i className={'fas fa-info-circle ml-1'}></i>
+      </OverlayTrigger>
+    }
+  </>)
 }
   
-export default DiscordButton
+export default Discord
