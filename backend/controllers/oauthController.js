@@ -1,19 +1,20 @@
 import asyncHandler from 'express-async-handler'
 import Oauth from '../models/oauthModel.js'
 import { getDiscordOauth, revokeDiscordOauth, getDiscordOauthUrl } from '../discord/oauth.js'
+import fetchOauthProfile from '../utils/fetchOauthProfile.js'
 
-// @desc    Create oauth
+// @desc    Create or update oauth
 // @route   POST /api/oauth/:name
 // @access  Private
-const createOauth = asyncHandler(async (req, res) => {
+const createOrUpdateOauth = asyncHandler(async (req, res, next) => {
   const { name } = req.params
   const { code } = req.body
 
-  if (code) {
-    let oauthData
-    try {
-      switch(name) {
-        case 'discord':
+  let oauthData
+  try {
+    switch(name) {
+      case 'discord':
+        if (code) {
           const { data } = await getDiscordOauth(code)
           oauthData = {
             name,
@@ -25,33 +26,38 @@ const createOauth = asyncHandler(async (req, res) => {
             expires: data.expires_in,
             revoked: false
           }
-          break
-      }
-    } catch (err) {
-      res.status(400)
-      return res.json(err.response.data)
+        } else {
+          oauthData = await Oauth.findOne({ user: req.user._id, name: name })
+        }
+        break
     }
 
-    const oauth = await Oauth.findOneAndUpdate({ name: name, user: req.user._id}, oauthData, { upsert: true, runValidators: true, new: true })
+    oauthData.profile = await fetchOauthProfile(name, oauthData.accessToken)
 
-    await oauth.save((err, data) => {
+    const oauth = await Oauth.findOneAndUpdate({ name: name, user: req.user._id }, oauthData, { upsert: true, runValidators: true, new: true })
+  
+    await oauth.save(async (err, data) => {
       if (err) {
         res.status(400)
         throw new Error('Oauth save failed')
       } else {
-        res.status(202)
+        res.status(201)
         res.json({
           _id: data._id,
           name: data.name,
+          profile: data.profile,
           revoked: data.revoked
         })
       }
     })
+  } catch (err) {
+    res.status(400)
+    return res.json(err.response.data)
   }
 })
 
 // @desc    Get oauth authorization URL
-// @route   GET /api/oauth/:name
+// @route   GET /api/oauth/url/:name
 // @access  Private
 const getOauthNameUrl = asyncHandler(async (req, res) => {
   let url = ''
@@ -75,12 +81,12 @@ const getOauthByUserAndName = asyncHandler(async (req, res) => {
 // @route   GET /api/oauth
 // @access  Private
 const getOauth = asyncHandler(async (req, res) => {
-  const oauth = await Oauth.find({ user: req.user._id }).select('_id name revoked expires')
+  const oauth = await Oauth.find({ user: req.user._id }).select('_id name revoked expires userName profile discriminator')
   res.json(oauth)
 })
 
 // @desc    Get oauth by user
-// @route   GET /api/oauth/:userId
+// @route   GET /api/oauth/user/:userId
 // @access  Private/Admin
 const getOauthByUser = asyncHandler(async (req, res) => {
   const oauth = await Oauth.find({ user: req.params.userId })
@@ -150,7 +156,7 @@ const revokeOauth = asyncHandler(async (req, res) => {
 })
 
 export {
-  createOauth,
+  createOrUpdateOauth,
   listOauth,
   getOauthByUser,
   getOauthByUserAndName,

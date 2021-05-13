@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import asciiTable from 'ascii-table'
 import { MessageEmbed } from 'discord.js'
 import Emote from '../models/emoteModel.js'
+import Oauth from '../models/oauthModel.js'
 
 const ping = {
   name: 'ping',
@@ -29,17 +30,22 @@ const addEmote = {
   name: 'addemote',
   description: 'Add emote',
   execute: asyncHandler(async (msg, args) => {
-    if (args.length <= 1) return
-    const [ emoteName, emoteImage ] = args
-    const emote = new Emote({
-      name: emoteName,
-      image: emoteImage
-    })
-    try {
-      await emote.save()
-      msg.reply(`${emoteName} added`).then(msg.delete())
-    } catch (err) {
-      msg.channel.send(err.message)
+    const discordOauth = await Oauth.findOne({ "profile.id": msg.author.id })
+    if (!discordOauth) {
+      msg.channel.send('You must register in order to use this command')
+    } else {
+      if (args.length <= 1) return
+      const [ emoteName, emoteImage ] = args
+      const emote = new Emote({
+        name: emoteName,
+        image: emoteImage
+      })
+      try {
+        await emote.save()
+        msg.reply(`${emoteName} added`).then(msg.delete())
+      } catch (err) {
+        msg.channel.send(err.message)
+      }
     }
   })
 }

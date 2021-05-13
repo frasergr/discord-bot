@@ -1,9 +1,11 @@
 import { Client, Collection } from 'discord.js'
 import botCommands from './commands.js'
+import botSlashCommands from './slashCommands.js'
 
 const discordBot = () => {
-  const bot = new Client()
+  const bot = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] })
   bot.commands = new Collection()
+  bot.slashCommands = new Collection()
   bot.on('error', console.error)
 
   bot.login(process.env.DISCORD_AUTH_TOKEN)
@@ -11,66 +13,36 @@ const discordBot = () => {
   bot.once('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`)
 
-    // const createAPIMessage = async (interaction, content) => {
-    //   const apiMessage = await APIMessage.create(bot.channels.resolve(interaction.channel_id), content)
-    //     .resolveData()
-    //     .resolveFiles()
-    
-    //   return { ...apiMessage.data, files: apiMessage.files }
-    // }
+    bot.api.applications(bot.user.id).guilds(process.env.DISCORD_GUILD_ID).commands.post({
+      data: {
+        name: "hello",
+        description: "Replies with Hello World"
+      }
+    })
 
-    // bot.api.applications(bot.user.id).guilds(process.env.DISCORD_GUILD_ID).commands.post({
-    //   data: {
-    //     name: "hello",
-    //     description: "Replies with Hello World"
-    //   }
-    // })
+    bot.api.applications(bot.user.id).guilds(process.env.DISCORD_GUILD_ID).commands.post({
+      data: {
+        name: "register",
+        description: "Registers with bot"
+      }
+    })
 
-    // bot.api.applications(bot.user.id).guilds(process.env.DISCORD_GUILD_ID).commands.post({
-    //   data: {
-    //     name: "echo",
-    //     description: "Echoes your text as an embed",
-    //     options: [
-    //       {
-    //         name: "content",
-    //         description: "Content of the embed",
-    //         type: 3,
-    //         required: true,
-    //       }
-    //     ]
-    //   }
-    // })
+    Object.keys(botSlashCommands).map(key => {
+      bot.slashCommands.set(botSlashCommands[key].name, botSlashCommands[key])
+    })
 
-    // bot.ws.on('INTERACTION_CREATE', async interaction => {
-    //   const command = interaction.data.name.toLowerCase()
-    //   const args = interaction.data.options
+    bot.ws.on('INTERACTION_CREATE', async interaction => {
+      const command = interaction.data.name.toLowerCase()
+      const args = interaction.data.options
 
-    //   if (command === 'hello') {
-    //     bot.api.interactions(interaction.id, interaction.token).callback.post({
-    //       data: {
-    //         type: 4,
-    //         data: {
-    //           content: "Hello World!"
-    //         }
-    //       }
-    //     })
-    //   }
+      try {
+        bot.slashCommands.get(command).execute(bot, interaction)
+      } catch (error) {
+        console.error(error)
+        msg.reply('there was an error trying to execute that command!')
+      }
 
-    //   if (command === 'echo') {
-    //     const description = args.find(arg => arg.name.toLowerCase() === 'content').value
-    //     const embed = new MessageEmbed()
-    //       .setTitle("Echo")
-    //       .setDescription(description)
-    //       .setAuthor(interaction.member.user.username)
-
-    //     bot.api.interactions(interaction.id, interaction.token).callback.post({
-    //       data: {
-    //         type: 4,
-    //         data: await createAPIMessage(interaction, embed)
-    //       }
-    //     })
-    //   }
-    // })
+    })
   })
 
   Object.keys(botCommands).map(key => {
@@ -80,6 +52,7 @@ const discordBot = () => {
   bot.on('message', msg => {
     if (msg.author.bot) return
     if (!msg.content.startsWith(process.env.DISCORD_COMMAND_PREFIX)) return
+    if ((!msg.member.roles.cache.some(role => process.env.DISCORD_ALLOWED_ROLES.split(',').includes(role.name))) && (msg.author.id != msg.guild.ownerID)) return
 
     const args = msg.content.split(/ +/)
     const command = args.shift().toLowerCase().substring(1)
