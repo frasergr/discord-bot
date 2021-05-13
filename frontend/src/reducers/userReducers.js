@@ -35,6 +35,9 @@ import {
   USER_OAUTH_REVOKE_FAIL,
   USER_OAUTH_REVOKE_REQUEST,
   USER_OAUTH_REVOKE_SUCCESS,
+  USER_CHECK_REGISTER_TOKEN_REQUEST,
+  USER_CHECK_REGISTER_TOKEN_SUCCESS,
+  USER_CHECK_REGISTER_TOKEN_FAIL,
 } from '../constants/userConstants.js'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -173,6 +176,19 @@ export const userOauthRevokeReducer = (state = {}, action) => {
     case USER_OAUTH_REVOKE_SUCCESS:
       return { loading: false, oauth: action.payload, success: true }
     case USER_OAUTH_REVOKE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const userCheckRegisterTokenReducer = (state = { success: false }, action) => {
+  switch (action.type) {
+    case USER_CHECK_REGISTER_TOKEN_REQUEST:
+      return { loading: true }
+    case USER_CHECK_REGISTER_TOKEN_SUCCESS:
+      return { loading: false, success: true }
+    case USER_CHECK_REGISTER_TOKEN_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

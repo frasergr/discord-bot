@@ -6,15 +6,16 @@ import { registerOauth } from '../actions/userActions'
 const OauthRedirect = ({ location, match }) => {
   const name = match.params.name
   const query = location.search
-  const searchParams = new URLSearchParams(query)
+  const params = new URLSearchParams(query)
+  const code = params.get('code')
 
   const dispatch = useDispatch()
   
   useEffect(() => {
-    if (searchParams.has('code')) {
-      dispatch(registerOauth(searchParams.get('code'), name))
+    if (code) {
+      dispatch(registerOauth(code, name))
     }
-  }, [dispatch, searchParams, name])
+  }, [dispatch, code, name])
 
   return <Redirect to={{pathname: "/profile", state: {refreshOauth: true}}} />
 }

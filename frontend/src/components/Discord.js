@@ -97,7 +97,7 @@ const Discord = () => {
         delay={{ show: 250, hide: 400 }}
         overlay={
           <Tooltip id={'discord-info-tooltip'}><>
-            <img className={'w-75'} src={`https://cdn.discordapp.com/avatars/${discordOauth?.profile?.id}/${discordOauth?.profile?.avatar}.png`}/>
+            <img alt={'Discord avatar'} className={'w-75'} src={`https://cdn.discordapp.com/avatars/${discordOauth?.profile?.id}/${discordOauth?.profile?.avatar}.png`}/>
             <div>{`${discordOauth?.profile?.userName}#${discordOauth?.profile?.discriminator}`}</div>
           </></Tooltip>
         }
